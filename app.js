@@ -23,7 +23,7 @@ function onConnected(socket) {
         currentUsers = currentUsers + 1
         socketsConected[socket.id] = data
 
-        io.emit('clients-total', currentUsers)
+        io.emit('clients-total', currentUsers) // emits to all
         io.emit('user-list', [...nickList()])
         io.emit('user-joined', data)
     })
@@ -45,7 +45,7 @@ function onConnected(socket) {
     })
 
     socket.on('message', (data) => {
-        socket.broadcast.emit('chat-message', data)
+        socket.broadcast.emit('chat-message', data) //emits to all minus sender
     })
 
     socket.on('feedback', (data) => {
