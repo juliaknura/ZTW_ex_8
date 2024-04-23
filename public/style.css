@@ -11,15 +11,16 @@ body {
     font-family: 'Open Sans', sans-serif;
     display: grid;
     place-items: center;
-    background-color: #ebebeb;
+    background-color: #D58936; 
 }
 
 .title {
     margin: 20px 0;
+    color: #3C1518;
 }
 
 .main {
-    border: 8px solid #dddddd;
+    border: 8px solid #3C1518; 
     border-radius: 24px;
     overflow: hidden;
 }
@@ -33,26 +34,35 @@ body {
     font-size: 24px;
     font-weight: 700;
     padding: 8px 16px;
-    color: #3b3b3b;
-    background-color: #ebebeb;
+    color: #FFFFFF;
+    background-color: #A44200;
 }
 
 .name-input {
     font-size: 24px;
     font-weight: 700;
-    color: #7e7e7e;
+    color: #FFFFFF;
     flex-grow: 1;
-    /* border: none; */
     margin: 0px 12px;
     outline: none;
-    background-color: #ebebeb;
+    background-color: #D58936; 
 }
 
 .message-container {
-    display: flex;
     flex-direction: column;
-    background-color: #f6f6f6;
-    width: 400px;
+    background-color: #3C1518; 
+    width: calc(100vw / 1.5);
+    height: 600px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: none;
+}
+
+.message-container-show {
+    flex-direction: column;
+    display: flex;
+    background-color: #3C1518; 
+    width: calc(100vw / 1.5);
     height: 600px;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -63,24 +73,25 @@ body {
     list-style: none;
     padding: 8px 12px;
     margin: 12px;
-    max-width: 250px;
+    max-width: calc(100% - 24px);
     font-size: 18px;
     word-wrap: break-word;
+    width: fit-content;
 }
 
 .message-left {
     border-radius: 20px 20px 20px 0px;
     align-self: flex-start;
-    background-color: #fff;
-    box-shadow: -2px 2px 4px #dcdcdc;
+    background-color: #A44200; 
+    box-shadow: -2px 2px 4px black; 
 }
 
 .message-right {
     border-radius: 20px 20px 0px 20px;
     align-self: flex-end;
-    background-color: #2d2d2d;
-    box-shadow: 2px 2px 4px #dcdcdc;
-    color: #f6f6f6;
+    background-color: #FFFFFF;
+    box-shadow: 2px 2px 4px black; 
+    color: #A44200;
 }
 
 .message-left > p > span,
@@ -95,20 +106,47 @@ body {
     font-style: italic;
     font-size: 14px;
     padding: 0px 16px 16px 16px;
-    color: #2d2d2d;
+    color: #FFFFFF;
     text-align: center;
 }
 
 .message-form {
     display: flex;
     justify-content: space-between;
-    width: 400px;
+    width: calc(100vw / 1.5);
 }
 
 .name-form {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     width: 700px;
+}
+
+.name-form > * {
+    margin-bottom: 10px;
+}
+
+.room-select {
+    height: 48px;
+    font-size: 16px;
+    border: none;
+    padding: 12px 20px;
+    outline: none;
+    background-color: #D58936;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
+}
+
+.room-select:hover {
+    background-color: #C4782E;
+}
+
+.room-select.active {
+    background-color: #C4782E;
 }
 
 .message-input {
@@ -118,7 +156,35 @@ body {
     border: none;
     outline: none;
     padding: 0 12px;
-    background-color: #fff;
+    background-color: #FFFFFF; 
+}
+
+.rooms {
+    display: flex;
+}
+
+
+.room-button {
+    flex: 1;
+    height: 48px;
+    font-size: 16px;
+    border: none;
+    padding: 12px 20px;
+    outline: none;
+    background-color: #A44200;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.room-button:hover {
+    background-color: #242331;
+}
+
+.room-button.active {
+    background-color: #242331;
 }
 
 .send-button {
@@ -127,19 +193,25 @@ body {
     border: none;
     padding: 0px 20px;
     outline: none;
-    background-color: #fff;
+    background-color: #D58936;
+    color: #FFFFFF;
     cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.send-button:hover {
+    background-color: #C4782E; 
 }
 
 .v-divider {
     height: 48px;
     width: 2px;
-    background-color: #f6f6f6;
+    background-color: #A44200; 
 }
 
 #client-total {
     margin: 20px 0;
-    color: #7e7e7e;
+    color: #FFFFFF;
     display: none;
 }
 
