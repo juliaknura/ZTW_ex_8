@@ -51,10 +51,13 @@ function updateMessageContrainerIndex(room) {
 roomButtons.forEach((button) => {
   button.addEventListener("click", () => {
     room = button.id;
+    previous_index = currentMessageContainerIndex;
+    updateMessageContrainerIndex(room);
+    socket.emit("user-left", {name: nameInput.value, index: previous_index})
     socket.emit("join-room", room, nameInput.value);
-    messageContainers[currentMessageContainerIndex].classList.remove("message-container-show");
-    messageContainers[currentMessageContainerIndex].classList.add("message-container");
-    updateMessageContrainerIndex(room)
+    socket.emit("user-joined", {name: nameInput.value, index: currentMessageContainerIndex})
+    messageContainers[previous_index].classList.remove("message-container-show");
+    messageContainers[previous_index].classList.add("message-container");
     messageContainers[currentMessageContainerIndex].classList.add("message-container-show");
     messageContainers[currentMessageContainerIndex].classList.remove("message-container");
   });
@@ -96,7 +99,6 @@ nameForm.addEventListener("submit", (e) => {
 
 function registerUser() {
   if (nameInput.value === "") return;
-  socket.emit("new-user", nameInput.value, room);
 
   chatBox.style.display = "block";
   clientsTotal.style.display = "block";
@@ -113,14 +115,14 @@ function registerUser() {
   messageContainers[currentMessageContainerIndex].classList.remove("message-container-show");
   messageContainers[currentMessageContainerIndex].classList.add("message-container");
   updateMessageContrainerIndex(roomsDropdown.value)
- // messageContainers[currentMessageContainerIndex].style.display = "block"
+  socket.emit("new-user", {name: nameInput.value, index: currentMessageContainerIndex});
   messageContainers[currentMessageContainerIndex].classList.add("message-container-show");
   messageContainers[currentMessageContainerIndex].classList.remove("message-container");
   setActive(roomButtons[currentMessageContainerIndex])
 }
 
 socket.on("clients-total", (data) => {
-  clientsTotal.innerText = `Liczba użytkowników w pokoju: ${data}`;
+  clientsTotal.innerText = `Liczba użytkowników w pokojach: ${data}`;
 });
 
 socket.on("chat-message", (data) => {
@@ -161,21 +163,28 @@ function scrollToBottom() {
 messageInput.addEventListener("focus", (e) => {
   socket.emit("feedback", {
     feedback: `${nameInput.value} pisze`,
+    messageContainerIndex: currentMessageContainerIndex
   });
 });
 
 messageInput.addEventListener("keypress", (e) => {
   socket.emit("feedback", {
     feedback: `${nameInput.value} pisze`,
+    messageContainerIndex: currentMessageContainerIndex
   });
 });
 messageInput.addEventListener("blur", (e) => {
   socket.emit("feedback", {
     feedback: "",
+    messageContainerIndex: currentMessageContainerIndex
   });
 });
 
 socket.on("feedback", (data) => {
+  if (data.messageContainerIndex !== currentMessageContainerIndex) {
+    return
+  }
+
   clearFeedback();
   const element = `
         <li class="message-feedback">
@@ -192,19 +201,28 @@ function clearFeedback() {
 }
 
 socket.on("user-joined", (data) => {
+  console.log("COKOLWIEK")
+  console.log(`index = ${data.index}`)
+  console.log(`name = ${data.name}`)
+  console.log(`currentMessageContainerIndex = ${currentMessageContainerIndex}`)
   const element = `
         <li class="user-feedback">
-            <p class="feedback" id="feedback">${data} dołączył/a do czatu</p>
+            <p class="feedback" id="feedback">${data.name} dołączył/a do czatu</p>
         </li>
     `;
 
-    messageContainers[currentMessageContainerIndex].innerHTML += element;
+    messageContainers[data.index].innerHTML += element;
 });
 
 socket.on("user-left", (data) => {
+  if (data.index !== currentMessageContainerIndex) {
+    console.log(`Log out ${data.index} ${data.name}`)
+    return
+  }
+
   const element = `
         <li class="user-feedback">
-            <p class="feedback" id="feedback">${data} opuścił/a czat</p>
+            <p class="feedback" id="feedback">${data.name} opuścił/a czat</p>
         </li>
     `;
 
@@ -214,12 +232,14 @@ socket.on("user-left", (data) => {
 socket.on("user-list", (data) => {
   clearNicks();
   for (const id in data) {
-    const element = `
+    if (data[id] && data[id].index === currentMessageContainerIndex) {
+      const element = `
       <li class="nick">
-        ${data[id]}
+        ${data[id].name}
       </li>
-    `;
-    userList.innerHTML += element;
+      `;
+      userList.innerHTML += element;
+    }
   }
 });
 
